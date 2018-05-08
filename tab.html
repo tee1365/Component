@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <!-- <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script> -->
+  <style>
+    ul,
+    li {
+      margin: 0;
+      padding: 0;
+    }
+
+    li {
+      list-style: none;
+    }
+
+    .clearfix:after {
+      content: '';
+      display: block;
+      clear: both;
+    }
+
+    .tab {
+      width: 600px;
+      margin: 20px auto;
+      border: 1px solid #ccc;
+      padding: 20px 10px;
+      border-radius: 4px;
+    }
+
+    .tab-header {
+      border-bottom: 1px solid #ccc;
+    }
+
+    .tab-header>li {
+      float: left;
+      color: brown;
+      border-top: 1px solid #fff;
+      border-left: 1px solid #fff;
+      border-right: 1px solid #fff;
+      padding: 10px 20px;
+      cursor: pointer;
+    }
+
+    .tab-header .active {
+      border: 1px solid #ccc;
+      border-bottom-color: #fff;
+      border-radius: 4px 4px 0 0;
+      color: #333;
+      margin-bottom: -1px;
+    }
+
+    .tab-container {
+      padding: 20px 10px;
+    }
+
+    .tab-container>li {
+      display: none;
+    }
+
+    .tab-container>.active {
+      display: block;
+    }
+
+    .box {
+      height: 1000px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="tab">
+    <ul class="tab-header clearfix">
+      <li class="active">page1</li>
+      <li>page2</li>
+      <li>page3</li>
+    </ul>
+    <ul class="tab-container">
+      <li class="active">content1
+        <ul>
+          <li></li>
+        </ul>
+      </li>
+      <li>content2</li>
+      <li>content3</li>
+    </ul>
+  </div>
+
+  <div class="tab">
+    <ul class="tab-header clearfix">
+      <li class="active">page1</li>
+      <li>page2</li>
+      <li>page3</li>
+      <li>page4</li>
+    </ul>
+    <ul class="tab-container">
+      <li class="active">content1
+        <ul>
+          <li></li>
+        </ul>
+      </li>
+      <li>content2</li>
+      <li>content3</li>
+      <li>content4</li>
+    </ul>
+  </div>
+
+  <div class="tab">
+    <ul class="tab-header clearfix">
+      <li class="active">page1</li>
+      <li>page2</li>
+      <li>page3</li>
+      <li>page4</li>
+    </ul>
+    <ul class="tab-container">
+      <li class="active">content1
+        <ul>
+          <li></li>
+        </ul>
+      </li>
+      <li>content2</li>
+      <li>content3</li>
+      <li>content4</li>
+    </ul>
+  </div>
+  <script>
+    var Tab = (function() {
+      function _Tab(node) {
+        this.node = node
+        this.start()
+        this.bindEvent()
+      }
+
+      _Tab.prototype.start = function() {
+        this.headerul = this.node.querySelector(".tab-header")
+        this.headerlis = this.node.querySelectorAll(".tab-header>li")
+        this.contentul = this.node.querySelector(".tab-container")
+        this.contentlis = this.node.querySelectorAll(".tab-container>li")
+      }
+
+      _Tab.prototype.bindEvent = function() {
+        var _this = this
+        this.headerul.addEventListener("click", function(e) {
+          var target = e.target
+          var index = [].indexOf.call(_this.headerlis, target)
+          _this.headerlis.forEach(function(headerli) {
+            headerli.classList.remove("active")
+          })
+          _this.headerlis[index].classList.add("active")
+          _this.contentlis.forEach(function(contentli) {
+            contentli.classList.remove("active")
+          })
+          _this.contentlis[index].classList.add("active")
+        })
+      }
+
+      return {
+        init: function(nodes) {
+          nodes.forEach(function(node) {
+            new _Tab(node)
+          })
+        }
+      }
+    })()
+
+    Tab.init(document.querySelectorAll(".tab"))
+  </script>
+</body>
+
+</html>

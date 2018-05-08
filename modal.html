@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+  <title>Document</title>
+  <style>
+    .dialog .dialog-overlay {
+      width: 100%;
+      height: 100%;
+      opacity: 0.5;
+      background: #000;
+
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 3000;
+    }
+
+
+    .dialog .dialog-box {
+      position: absolute;
+      z-index: 5000;
+      left: 50%;
+      top: 30%;
+      margin-left: -164px;
+      font-size: 14px;
+      padding-bottom: 10px;
+      border-radius: 5px;
+      background: #eee;
+      width: 328px;
+    }
+
+    .dialog .dialog-header {
+      padding: 10px 19px;
+      color: #fff;
+      background: #676666;
+    }
+
+    .dialog .dialog-header h3 {
+      margin: 0;
+      font-size: 14px;
+    }
+
+    .dialog .dialog-header .btn-close {
+      position: absolute;
+      right: 10px;
+      top: 8px;
+      cursor: pointer;
+    }
+
+    .dialog .dialog-content {
+      padding: 10px;
+      margin: 13px;
+      color: #666;
+      font-size: 11px;
+    }
+
+    .dialog .dialog-footer {
+      text-align: center;
+    }
+
+    a.btn {
+      position: relative;
+      text-align: center;
+      background-color: #e33100;
+      display: inline-block;
+      width: 50px;
+      padding: 5px 0 6px;
+      margin: 2px;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 3px;
+    }
+
+    a.btn:hover {
+      background-color: #c33100;
+    }
+  </style>
+</head>
+
+<body>
+  <button id="open1"> dialog1</button>
+  <button id="open2"> dialog2</button>
+  <button id="open3"> dialog3</button>
+  <button id="open4"> dialog4</button>
+  <button id="open5"> dialog5</button>
+  <script>
+    var Modal = (function() {
+      function _Modal() {
+        this.createDialog()
+        this.bindEvent()
+      }
+
+      _Modal.prototype = {
+        defaultOption: {
+          title: "",
+          message: "",
+          showClose: true,
+          showConfirm: false,
+          onClose: function() {},
+          onConfirm: function() {}
+        },
+
+        open: function(option) {
+          this.setOption(option)
+          this.setDialog()
+          this.$dialog.show()
+        },
+
+        createDialog: function() {
+          var tpl = "<div class='dialog' style='display:none'>" +
+            "<div class='dialog-overlay'></div>" +
+            "<div class='dialog-box'>" +
+            "<div class='dialog-header'>" +
+            "<h3></h3>" +
+            "<div class='btn-close'>x</div>" +
+            "</div>" +
+            "<div class='dialog-content'></div>" +
+            "<div class='dialog-footer'>" +
+            "<a href='#' class='btn btn-close'>取消</a>" +
+            "<a href='#' class='btn btn-confirm'>确定</a>" +
+            "</div>" +
+            "</div>" +
+            "</div>";
+          this.$dialog = $(tpl);
+          $("body").append(this.$dialog);
+        },
+        bindEvent: function() {
+          var _this = this
+          _this.$dialog.find(".btn-close").on("click", function(e) {
+            e.preventDefault()
+            _this.option.onClose()
+            _this.$dialog.hide()
+          })
+          _this.$dialog.find(".btn-confirm").on("click", function(e) {
+            e.preventDefault()
+            _this.option.onConfirm()
+            _this.$dialog.hide()
+          })
+          $("button").on("click", function(e) {
+            e.stopPropagation()
+          })
+          $(window).on("click", function(e) {
+            _this.$dialog.hide()
+          })
+        },
+        setOption: function(option) {
+          if (typeof option === "string") {
+            this.option = $.extend({}, this.defaultOption, {
+              message: option
+            })
+          } else if (typeof option === "object") {
+            this.option = $.extend({}, this.defaultOption, option)
+          }
+        },
+        setDialog: function() {
+          var $dialog = this.$dialog
+          if (!this.option.title) {
+            $dialog.find(".dialog-header").hide()
+          } else if (this.option.title) {
+            $dialog.find(".dialog-header").show()
+            $dialog.find(".dialog-header h3").text(this.option.title)
+          }
+          if (!this.option.showClose) {
+            $dialog.find(".btn-close").hide()
+          } else if (this.option.showClose) {
+            $dialog.find(".btn-close").show()
+          }
+          if (!this.option.showConfirm) {
+            $dialog.find(".btn-confirm").hide()
+          } else if (this.option.showConfirm) {
+            $dialog.find(".btn-confirm").show()
+          }
+
+          $dialog.find(".dialog-content").html(this.option.message)
+        }
+
+      }
+      return new _Modal()
+    })()
+
+    $("#open1").on("click", function() {
+      Modal.open("hello world")
+    })
+    $("#open2").on("click", function() {
+      Modal.open("<a href= 'https: //www.google.co.nz/'>google</a>")
+    })
+    $("#open3").on("click", function() {
+      Modal.open({
+        title: "title3",
+        message: "message3",
+        showClose: true,
+        showConfirm: true,
+        onClose: function() {
+          console.log("close")
+        },
+        onConfirm: function() {
+          console.log("confirm")
+        }
+      })
+    })
+
+    var tpl = "<ul><li>content1</li><li>content2</li><li>content3</li><li>content4</li></ul>";
+    $("#open4").on("click", function() {
+      Modal.open({
+        title: "title4",
+        message: tpl,
+        showClose: true,
+        showConfirm: true,
+        onClose: function() {
+          console.log("close")
+        },
+        onConfirm: function() {
+          console.log("confirm")
+        }
+      })
+    })
+    $("#open5").on("click", function() {
+      Modal.open({
+        title: "title5",
+        message: "hello5",
+        showClose: false,
+        showConfirm: false,
+        onClose: function() {
+          console.log("close")
+        }
+      })
+    })
+  </script>
+</body>
+
+</html>
